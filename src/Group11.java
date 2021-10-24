@@ -49,8 +49,72 @@ public class Group11 {
 	// You would need to provide your own function that prints your sorted array to
 	// a file in the exact same format that my program outputs
 	private static void sort(Integer[] toSort) {
-		Arrays.sort(toSort, new BinaryComparator());
+    // We'll use a merge sort, since those tend to require fewer comparisons
+    // than quicksorts. (The number of comparisons won't be asymptotically
+    // smaller, but it should at least be smaller by a constant factor.)
+    mergeSort(
+      toSort,
+      new Integer[toSort.length],
+      0,
+      toSort.length,
+      new BinaryComparator()
+    );
 	}
+
+  /**
+   * Sort a subrange of an array of integers.
+   *
+   * @param toSort The array that we're going to sort a subrange of.
+   * @param freeSpace An array of exactly the same size as toSort, used as
+   * scratch space.
+   * @param start The start of the subrange to sort (inclusive)
+   * @param end The end of the subrange to sort (exclusive)
+   * @param comparator How to compare elements of toSort.
+   *
+   * This method mutates the array toSort; after this method is called, the
+   * subrange of toSort from start to end will be sorted.
+   */
+  private static void mergeSort(
+    Integer[] toSort,
+    Integer[] freeSpace,
+    int start,
+    int end,
+    Comparator<Integer> comparator
+  ) {
+    if (end - start < 2) {
+      return;
+    }
+
+    int midpoint = (start / 2) + (end / 2) + (start & end & 0x1);
+    mergeSort(toSort, freeSpace, start, midpoint, comparator);
+    mergeSort(toSort, freeSpace, midpoint, end, comparator);
+    int i = start;
+    int j = midpoint;
+    int k = start;
+    while (i < midpoint && j < end) {
+      if (comparator.compare(toSort[i], toSort[j]) < 0) {
+        freeSpace[k] = toSort[i];
+        i++;
+        k++;
+      } else {
+        freeSpace[k] = toSort[j];
+        j++;
+        k++;
+      }
+    }
+    while (i < midpoint) {
+      freeSpace[k] = toSort[i];
+      i++;
+      k++;
+    }
+    while (j < end) {
+      freeSpace[k] = toSort[j];
+      j++;
+      k++;
+    }
+
+    System.arraycopy(freeSpace, start, toSort, start, end - start);
+  }
 
 	private static String[] readData(String inFile) throws FileNotFoundException {
 		ArrayList<String> input = new ArrayList<>();
@@ -93,7 +157,6 @@ public class Group11 {
 	}
 
 	private static class BinaryComparator implements Comparator<Integer> {
-
 		@Override
 		public int compare(Integer n1, Integer n2) {
 			int digits1 = Helper11.numBinaryOnes(n1);
@@ -102,15 +165,17 @@ public class Group11 {
 			int lengthSubstring1 = Helper11.lengthLongestRepeatedSubstring(Integer.toBinaryString(n1));
 			int lengthSubstring2 = Helper11.lengthLongestRepeatedSubstring(Integer.toBinaryString(n2));
 
-			if (digits1 != digits2) return (digits1 - digits2);
+			if (digits1 != digits2) {
+        return (digits1 - digits2);
+      }
+
 			// executed only of the number of 1s is the same
-			if (lengthSubstring1 != lengthSubstring2) return (lengthSubstring1 - lengthSubstring2);
+			if (lengthSubstring1 != lengthSubstring2) {
+        return (lengthSubstring1 - lengthSubstring2);
+      }
 
 			// executed only if both of the other ones were the same:
 			return (n1 - n2);
 		}
-
 	}
-
-
 }
