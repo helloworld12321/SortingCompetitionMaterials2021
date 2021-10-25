@@ -2,19 +2,6 @@
 public class Helper11 {
 
 	public static void main(String [] args) {
-		// Testing helper methods
-		if (numBinaryOnes(5) != 2) {
-			System.out.println("Unexpected result: " + numBinaryOnes(5));
-		}
-
-		if (numBinaryOnes(1023) != 10) {
-			System.out.println("Unexpected result: " + numBinaryOnes(1023));
-		}
-
-		if (numBinaryOnes(1024) != 1) {
-			System.out.println("Unexpected result: " + numBinaryOnes(1024));
-		}
-
 		// Testing the longest repeated non-overlapping substring
 		if (lengthLongestRepeatedSubstring("01") != 0) {
 			System.out.println("Unexpected result on \"01\": " + lengthLongestRepeatedSubstring("01"));
@@ -44,31 +31,11 @@ public class Helper11 {
 		}
 	}
 
-	/*
-	 * Takes an integer number and returns the number of 1s
-	 * in its binary representation.
-	 */
-	public static int numBinaryOnes(int n){
-		String binary = Integer.toBinaryString(n);
-
-		//System.out.println(binary);
-
-		int count = 0;
-		for (int i = 0; i < binary.length(); ++i) {
-			if (binary.charAt(i) == '1') {
-				count++;
-			}
-		}
-
-		return count;
-	}
-
-
 	public static int lengthLongestRepeatedSubstring(String binary) {
 		int length = 0;
 		// iterate over possible lengths
 		// the longest length is length/2 (rounded down) since they are non-overlapping
-		for (int n = 1; n <= Math.floor(binary.length()/2.0); ++n) {
+		for (int n = 1; n <= binary.length() / 2; ++n) {
 			//System.out.println("n = " + n);
 			boolean found = false;
 			// first index (the first index of the first copy):

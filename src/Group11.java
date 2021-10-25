@@ -169,17 +169,17 @@ public class Group11 {
 	private static class BinaryComparator implements Comparator<Integer> {
 		@Override
 		public int compare(Integer n1, Integer n2) {
-			int digits1 = Helper11.numBinaryOnes(n1);
-			int digits2 = Helper11.numBinaryOnes(n2);
-
-			int lengthSubstring1 = Helper11.lengthLongestRepeatedSubstring(Integer.toBinaryString(n1));
-			int lengthSubstring2 = Helper11.lengthLongestRepeatedSubstring(Integer.toBinaryString(n2));
+			int digits1 = Integer.bitCount(n1);
+			int digits2 = Integer.bitCount(n2);
 
 			if (digits1 != digits2) {
         return (digits1 - digits2);
       }
 
-			// executed only of the number of 1s is the same
+      // executed only of the number of 1s is the same
+      int lengthSubstring1 = Helper11.lengthLongestRepeatedSubstring(Integer.toBinaryString(n1));
+      int lengthSubstring2 = Helper11.lengthLongestRepeatedSubstring(Integer.toBinaryString(n2));
+
 			if (lengthSubstring1 != lengthSubstring2) {
         return (lengthSubstring1 - lengthSubstring2);
       }
