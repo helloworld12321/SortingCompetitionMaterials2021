@@ -84,14 +84,14 @@ public class Group11 {
     Comparator<Data> comparator
   ) {
     // The idea behind this merge sort implementation is that:
-    // - the (2k)th call takes freeSpace, merges, and writes to toSort;
-    // - the (2k-1)th call takes toSort, merges, and writes to freeSpace;
+    // - the (2k)th call takes copyOfToSort, merges, and writes to toSort;
+    // - the (2k-1)th call takes toSort, merges, and writes to copyOfToSort;
     // - ...
-    // - the 1st call takes toSort, merges, and writes to freeSpace;
-    // - the 0th call takes freeSpace, merges, and writes to toSort.
+    // - the 1st call takes toSort, merges, and writes to copyOfToSort;
+    // - the 0th call takes copyOfToSort, merges, and writes to toSort.
 
     // Even-numbered calls write to toSort; odd-numbered calls write to
-    // freeSpace.
+    // copyOfToSort.
 
     if (end - start < 2) {
       return;
