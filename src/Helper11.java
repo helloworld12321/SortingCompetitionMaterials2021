@@ -37,24 +37,19 @@ public class Helper11 {
 		// iterate over possible lengths
 		// the longest length is length/2 (rounded down) since they are non-overlapping
 		for (int n = 1; n <= binaryLength / 2; ++n) {
+      // An integer with the lower n bits set.
+      int mask = (1 << n) - 1;
+
 			boolean found = false;
 			// first index (the first index of the first copy):
       lookingForSubstringOfLengthN:
 			for (int i = 0; i < binaryLength - 2*n + 1; ++i) {
 				// second index (substrings are non-overlapping):
 				for (int j = i + n; j < binaryLength - n + 1; ++j) {
-					// iterating over the substring length:
-
-					int k = 0; // need the index after the loop to see if it finished
-					for (; k < n; k++) {
-						if (
-              (number >> (i + k) & 1)
-              != (number >> (j + k) & 1)
-            ) {
-							break;
-						}
-					}
-					if (k == n) {
+          if (
+            ((number >> i) & mask)
+            == ((number >> j) & mask)
+          ) {
 						found = true;
             break lookingForSubstringOfLengthN;
 					}
