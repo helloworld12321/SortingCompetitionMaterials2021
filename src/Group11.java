@@ -9,7 +9,6 @@ import java.util.Scanner;
 public class Group11 {
 
 	public static void main(String[] args) throws InterruptedException, FileNotFoundException {
-
 		if (args.length < 2) {
 			System.out.println("Please run with two command line arguments: input and output file names");
 			System.exit(0);
@@ -54,7 +53,7 @@ public class Group11 {
     // smaller, but it should at least be smaller by a constant factor.)
     mergeSort(
       toSort,
-      new Integer[toSort.length],
+      Arrays.copyOf(toSort, toSort.length),
       0,
       toSort.length,
       new BinaryComparator()
@@ -65,55 +64,66 @@ public class Group11 {
    * Sort a subrange of an array of integers.
    *
    * @param toSort The array that we're going to sort a subrange of.
-   * @param freeSpace An array of exactly the same size as toSort, used as
-   * scratch space.
+   * @param copyOfToSort An array with the same elements as toSort (at least,
+   *   between the indices start and end).
    * @param start The start of the subrange to sort (inclusive)
    * @param end The end of the subrange to sort (exclusive)
    * @param comparator How to compare elements of toSort.
    *
    * This method mutates the array toSort; after this method is called, the
    * subrange of toSort from start to end will be sorted.
+   *
+   * (This method also mutates copyOfToSort, which will contain garbage after
+   * this method is called.)
    */
   private static void mergeSort(
     Integer[] toSort,
-    Integer[] freeSpace,
+    Integer[] copyOfToSort,
     int start,
     int end,
     Comparator<Integer> comparator
   ) {
+    // The idea behind this merge sort implementation is that:
+    // - the (2k)th call takes freeSpace, merges, and writes to toSort;
+    // - the (2k-1)th call takes toSort, merges, and writes to freeSpace;
+    // - ...
+    // - the 1st call takes toSort, merges, and writes to freeSpace;
+    // - the 0th call takes freeSpace, merges, and writes to toSort.
+
+    // Even-numbered calls write to toSort; odd-numbered calls write to
+    // freeSpace.
+
     if (end - start < 2) {
       return;
     }
 
     int midpoint = (start / 2) + (end / 2) + (start & end & 0x1);
-    mergeSort(toSort, freeSpace, start, midpoint, comparator);
-    mergeSort(toSort, freeSpace, midpoint, end, comparator);
+    mergeSort(copyOfToSort, toSort, start, midpoint, comparator);
+    mergeSort(copyOfToSort, toSort, midpoint, end, comparator);
     int i = start;
     int j = midpoint;
     int k = start;
     while (i < midpoint && j < end) {
-      if (comparator.compare(toSort[i], toSort[j]) < 0) {
-        freeSpace[k] = toSort[i];
+      if (comparator.compare(copyOfToSort[i], copyOfToSort[j]) < 0) {
+        toSort[k] = copyOfToSort[i];
         i++;
         k++;
       } else {
-        freeSpace[k] = toSort[j];
+        toSort[k] = copyOfToSort[j];
         j++;
         k++;
       }
     }
     while (i < midpoint) {
-      freeSpace[k] = toSort[i];
+      toSort[k] = copyOfToSort[i];
       i++;
       k++;
     }
     while (j < end) {
-      freeSpace[k] = toSort[j];
+      toSort[k] = copyOfToSort[j];
       j++;
       k++;
     }
-
-    System.arraycopy(freeSpace, start, toSort, start, end - start);
   }
 
 	private static String[] readData(String inFile) throws FileNotFoundException {
