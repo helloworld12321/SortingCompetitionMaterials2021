@@ -36,13 +36,14 @@ public class Helper11 {
 		// iterate over possible lengths
 		// the longest length is length/2 (rounded down) since they are non-overlapping
 		for (int n = 1; n <= binary.length() / 2; ++n) {
-			//System.out.println("n = " + n);
 			boolean found = false;
 			// first index (the first index of the first copy):
+      lookingForSubstringOfLengthN:
 			for (int i = 0; i < binary.length() - 2*n + 1; ++i) {
 				// second index (substrings are non-overlapping):
 				for (int j = i + n; j < binary.length() - n + 1; ++j) {
 					// iterating over the substring length:
+
 					int k = 0; // need the index after the loop to see if it finished
 					for (; k < n; k++) {
 						//System.out.println("i = " + i + ", j = " + j + ", k = " + k);
@@ -50,14 +51,14 @@ public class Helper11 {
 							break;
 						}
 					}
-					//System.out.println("k = " + k + ",n = " + n);
 					if (k == n) {
 						found = true;
+            break lookingForSubstringOfLengthN;
 					}
 				}
 			}
-			//System.out.println(found);
-			if (found) {
+
+      if (found) {
 				length++;
 			} else {
 				return length;
