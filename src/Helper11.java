@@ -31,40 +31,45 @@ public class Helper11 {
 		}
 	}
 
+  // Use a static variable instead of a local variable to get rid of malloc costs.
+  // The element at substringLengths[i][j] contains the length of the longest
+  // repeated substring where the first repetition ends at y and the second
+  // repetition ends at x.
+  static final byte[][] substringLengths = new byte[24][24];
 	public static int lengthLongestRepeatedSubstring(int number) {
+    // This algorithm is modified from the one given here:
+    // https://en.wikipedia.org/wiki/Longest_common_substring_problem#Dynamic_programming
+
     int binaryLength = binaryLength(number);
+
 		int longestSubstringLengthSoFar = 0;
-		// iterate over possible lengths
-		// the longest length is length/2 (rounded down) since they are non-overlapping
-		for (int n = 1; n <= binaryLength / 2; ++n) {
-			boolean found = false;
-			// first index (the first index of the first copy):
-      lookingForSubstringOfLengthN:
-			for (int i = 0; i < binaryLength - 2*n + 1; ++i) {
-				// second index (substrings are non-overlapping):
-				for (int j = i + n; j < binaryLength - n + 1; ++j) {
-					// iterating over the substring length:
 
-					int k = 0; // need the index after the loop to see if it finished
-					for (; k < n; k++) {
-						if (
-              (number >> (i + k) & 1)
-              != (number >> (j + k) & 1)
-            ) {
-							break;
-						}
-					}
-					if (k == n) {
-						found = true;
-            break lookingForSubstringOfLengthN;
-					}
-				}
-			}
+		for (int i = 0; i < binaryLength; i++) {
+      for (int j = i + 1; j < binaryLength; j++) {
+        // Do the bits at positions i and j match?
+        if ((number >> i & 1) == (number >> j & 1)) {
+          int lengthFound;
 
-      if (found) {
-				longestSubstringLengthSoFar++;
-			} else {
-				return longestSubstringLengthSoFar;
+          // There's a repeated substring ending at i and j.
+          if (i == 0) {
+            lengthFound = substringLengths[j][i] = 1;
+          } else {
+            // Either:
+            // - We can get length of the repeated substring at (i, j) from the
+            //   length of the repeated substring at (i - 1, j - 1), or
+            // - If that would cause the two instances of the substring to
+            //   with each other, then we just make the repeated substring as
+            //   big as possible.
+            lengthFound = substringLengths[j][i] = (byte) Math.min(
+              substringLengths[j - 1][i - 1] + 1,
+              j - i
+            );
+          }
+
+          if (lengthFound > longestSubstringLengthSoFar) {
+            longestSubstringLengthSoFar = lengthFound;
+          }
+        }
 			}
 		}
 
