@@ -18,9 +18,9 @@ public class Group11 {
 		String outFileName = args[1];
 
 		// read as strings
-		Integer [] data = readInts(inputFileName);
+		Data[] data = readData(inputFileName);
 
-		Integer [] toSort = data.clone();
+		Data[] toSort = data.clone();
 
 		sort(toSort);
 
@@ -47,7 +47,7 @@ public class Group11 {
 	// Note: you may change the return type of the method.
 	// You would need to provide your own function that prints your sorted array to
 	// a file in the exact same format that my program outputs
-	private static void sort(Integer[] toSort) {
+	private static void sort(Data[] toSort) {
     // We'll use a merge sort, since those tend to require fewer comparisons
     // than quicksorts. (The number of comparisons won't be asymptotically
     // smaller, but it should at least be smaller by a constant factor.)
@@ -77,11 +77,11 @@ public class Group11 {
    * this method is called.)
    */
   private static void mergeSort(
-    Integer[] toSort,
-    Integer[] copyOfToSort,
+    Data[] toSort,
+    Data[] copyOfToSort,
     int start,
     int end,
-    Comparator<Integer> comparator
+    Comparator<Data> comparator
   ) {
     // The idea behind this merge sort implementation is that:
     // - the (2k)th call takes freeSpace, merges, and writes to toSort;
@@ -126,18 +126,17 @@ public class Group11 {
     }
   }
 
-	private static String[] readData(String inFile) throws FileNotFoundException {
-		ArrayList<String> input = new ArrayList<>();
+	private static Data[] readData(String inFile) throws FileNotFoundException {
+		ArrayList<Data> input = new ArrayList<>();
 		Scanner in = new Scanner(new File(inFile));
 
 		while(in.hasNext()) {
-			input.add(in.next());
+			input.add(new Data(in.nextInt()));
 		}
 
 		in.close();
 
-		// the string array is passed just so that the correct type can be created
-		return input.toArray(new String[0]);
+		return input.toArray(new Data[0]);
 	}
 
 	private static Integer[] readInts(String inFile) throws FileNotFoundException {
@@ -155,37 +154,50 @@ public class Group11 {
 		return (Integer[]) input.toArray(new Integer[0]);
 	}
 
-	private static void writeOutResult(Integer[] sorted, String outputFilename) throws FileNotFoundException {
-
+	private static void writeOutResult(Data[] sorted, String outputFilename) throws FileNotFoundException {
 		PrintWriter out = new PrintWriter(outputFilename);
-		for (Integer s : sorted) {
-			out.println(s);
-			//out.println(s + " " + Integer.toBinaryString(s));
+		for (Data s : sorted) {
+			out.println(s.value);
 		}
 		out.close();
-
 	}
 
-	private static class BinaryComparator implements Comparator<Integer> {
+	private static class BinaryComparator implements Comparator<Data> {
 		@Override
-		public int compare(Integer n1, Integer n2) {
-			int digits1 = Integer.bitCount(n1);
-			int digits2 = Integer.bitCount(n2);
+		public int compare(Data n1, Data n2) {
+			int digits1 = Integer.bitCount(n1.value);
+			int digits2 = Integer.bitCount(n2.value);
 
 			if (digits1 != digits2) {
         return (digits1 - digits2);
       }
 
       // executed only of the number of 1s is the same
-      int lengthSubstring1 = Helper11.lengthLongestRepeatedSubstring(n1);
-      int lengthSubstring2 = Helper11.lengthLongestRepeatedSubstring(n2);
+      int lengthSubstring1 = n1.getLengthLongestRepeatedSubstring();
+      int lengthSubstring2 = n2.getLengthLongestRepeatedSubstring();
 
 			if (lengthSubstring1 != lengthSubstring2) {
         return (lengthSubstring1 - lengthSubstring2);
       }
 
 			// executed only if both of the other ones were the same:
-			return (n1 - n2);
+			return (n1.value - n2.value);
 		}
 	}
+
+  private static class Data {
+    public int value;
+    private Integer lengthSubstring = null;
+
+    Data(int value) {
+      this.value = value;
+    }
+
+    public int getLengthLongestRepeatedSubstring() {
+      if (lengthSubstring == null) {
+        lengthSubstring = Helper11.lengthLongestRepeatedSubstring(value);
+      }
+      return lengthSubstring;
+    }
+  }
 }
