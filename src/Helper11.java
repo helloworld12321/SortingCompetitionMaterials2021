@@ -40,12 +40,15 @@ public class Helper11 {
       // An integer with the lower n bits set.
       int mask = (1 << n) - 1;
 
+      int upperBoundForI = binaryLength - 2 * n + 1;
+      int upperBoundForJ = binaryLength - n + 1;
+
 			boolean found = false;
 			// first index (the first index of the first copy):
       lookingForSubstringOfLengthN:
-			for (int i = 0; i < binaryLength - 2*n + 1; ++i) {
+			for (int i = 0; i < upperBoundForI; i++) {
 				// second index (substrings are non-overlapping):
-				for (int j = i + n; j < binaryLength - n + 1; ++j) {
+				for (int j = i + n; j < upperBoundForJ; j++) {
           if (
             ((number >> i) & mask)
             == ((number >> j) & mask)
@@ -57,7 +60,7 @@ public class Helper11 {
 			}
 
       if (found) {
-				longestSubstringLengthSoFar++;
+				longestSubstringLengthSoFar = n;
 			} else {
 				return longestSubstringLengthSoFar;
 			}
