@@ -177,8 +177,8 @@ public class Group11 {
       }
 
       // executed only of the number of 1s is the same
-      int lengthSubstring1 = Helper11.lengthLongestRepeatedSubstring(Integer.toBinaryString(n1));
-      int lengthSubstring2 = Helper11.lengthLongestRepeatedSubstring(Integer.toBinaryString(n2));
+      int lengthSubstring1 = Helper11.lengthLongestRepeatedSubstring(n1);
+      int lengthSubstring2 = Helper11.lengthLongestRepeatedSubstring(n2);
 
 			if (lengthSubstring1 != lengthSubstring2) {
         return (lengthSubstring1 - lengthSubstring2);
