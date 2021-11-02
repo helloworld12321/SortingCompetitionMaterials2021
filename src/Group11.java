@@ -17,10 +17,9 @@ public class Group11 {
 		String inputFileName = args[0];
 		String outFileName = args[1];
 
-		// read as strings
-		Data[] data = readData(inputFileName);
+		Integer[] data = readInts(inputFileName);
 
-		Data[] toSort = data.clone();
+		Integer[] toSort = data.clone();
 
 		sort(toSort);
 
@@ -32,13 +31,13 @@ public class Group11 {
 
 		long start = System.currentTimeMillis();
 
-		sort(toSort);
+		Data[] sorted = sort(toSort);
 
 		long end = System.currentTimeMillis();
 
 		System.out.println(end - start);
 
-		writeOutResult(toSort, outFileName);
+		writeOutResult(sorted, outFileName);
 
 	}
 
@@ -47,17 +46,19 @@ public class Group11 {
 	// Note: you may change the return type of the method.
 	// You would need to provide your own function that prints your sorted array to
 	// a file in the exact same format that my program outputs
-	private static void sort(Data[] toSort) {
+	private static Data[] sort(Integer[] toSort) {
     // We'll use a merge sort, since those tend to require fewer comparisons
     // than quicksorts. (The number of comparisons won't be asymptotically
     // smaller, but it should at least be smaller by a constant factor.)
+    Data[] data = intsToData(toSort);
     mergeSort(
-      toSort,
-      Arrays.copyOf(toSort, toSort.length),
+      data,
+      Arrays.copyOf(data, data.length),
       0,
       toSort.length,
       new BinaryComparator()
     );
+    return data;
 	}
 
   /**
@@ -126,17 +127,12 @@ public class Group11 {
     }
   }
 
-	private static Data[] readData(String inFile) throws FileNotFoundException {
-		ArrayList<Data> input = new ArrayList<>();
-		Scanner in = new Scanner(new File(inFile));
-
-		while(in.hasNext()) {
-			input.add(new Data(in.nextInt()));
-		}
-
-		in.close();
-
-		return input.toArray(new Data[0]);
+	private static Data[] intsToData(Integer[] ints) {
+    Data[] data = new Data[ints.length];
+    for (int i = 0; i < ints.length; i++) {
+      data[i] = new Data(ints[i]);
+    }
+    return data;
 	}
 
 	private static Integer[] readInts(String inFile) throws FileNotFoundException {
